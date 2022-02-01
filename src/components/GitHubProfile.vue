@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, onCreated } from 'vue'
 import Icon from 'vue-heroicon-next'
 
 export default {
@@ -86,7 +86,7 @@ export default {
     }
   },
 
-  created() {
+  mounted() {
     this.fetchUser()
   }
 }
