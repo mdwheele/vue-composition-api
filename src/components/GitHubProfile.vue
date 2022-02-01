@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch, toRefs, watchEffect } from 'vue'
 import Icon from 'vue-heroicon-next'
 
 export default {
@@ -38,19 +38,20 @@ export default {
 
   props: {
     username: { 
-      type: String,
+      type: Number,
       required: true
     }
   },
 
-  setup() {
+  setup(props) {
+    let _debounce = null
     const loading = ref(false)
     const user = ref({})
 
     function fetchUser() {        
       loading.value = true
 
-      fetch(`https://api.github.com/users/${this.username}`)
+      fetch(`https://api.github.com/users/${props.username}`)
         .then(response => response.json())
         .then(user => {
           user.value = {
@@ -71,22 +72,20 @@ export default {
       fetchUser()
     })
 
+    watch(() => props.username, () => {
+      if (_debounce) {
+        clearTimeout(_debounce)
+      }
+      
+      _debounce = setTimeout(() => {
+        fetchUser()
+      }, 600)
+    })
+
     return {
       loading,
       user,
       fetchUser
-    }
-  },
-
-  watch: {
-    username() {
-      if (this._debounce) {
-        clearTimeout(this._debounce)
-      }
-      
-      this._debounce = setTimeout(() => {
-        this.fetchUser()
-      }, 600)
     }
   }
 }
