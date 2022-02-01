@@ -28,8 +28,9 @@
 </template>
 
 <script>
-import { ref, onMounted, watch, toRefs, watchEffect } from 'vue'
+import { toRefs } from 'vue'
 import Icon from 'vue-heroicon-next'
+import useGitHub from '@/composables/github'
 
 export default {
   name: 'GitHubProfile',
@@ -38,54 +39,18 @@ export default {
 
   props: {
     username: { 
-      type: Number,
+      type: String,
       required: true
     }
   },
 
   setup(props) {
-    let _debounce = null
-    const loading = ref(false)
-    const user = ref({})
-
-    function fetchUser() {        
-      loading.value = true
-
-      fetch(`https://api.github.com/users/${props.username}`)
-        .then(response => response.json())
-        .then(user => {
-          user.value = {
-            name: user.name,
-            username: user.login,
-            avatar: user.avatar_url,
-            company: user.company,
-            location: user.location,
-            twitter: user.twitter_username
-          }
-        })
-        .finally(() => {
-          loading.value = false
-        })
-    }
-
-    onMounted(() => {
-      fetchUser()
-    })
-
-    watch(() => props.username, () => {
-      if (_debounce) {
-        clearTimeout(_debounce)
-      }
-      
-      _debounce = setTimeout(() => {
-        fetchUser()
-      }, 600)
-    })
+    const { username } = toRefs(props)
+    const { loading, user } = useGitHub(username)
 
     return {
       loading,
-      user,
-      fetchUser
+      user
     }
   }
 }
