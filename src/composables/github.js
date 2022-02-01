@@ -1,23 +1,47 @@
-import { ref, unref, onMounted, watch  } from 'vue'
+import { ref, unref, onMounted, watch, computed } from 'vue'
 
 export default function useGitHub(username) {
   const loading = ref(false)
+  const error = ref(null)
   const user = ref({})
+
+  const isHireableAndProductive = computed(() => {
+    console.log('foo')
+    return user.value.hireable === true && user.value.repos >= 10
+  })
   
   function fetchUser() {        
     loading.value = true
+    error.value = null
 
-    fetch(`https://api.github.com/users/${unref(username)}`)
-      .then(response => response.json())
-      .then(user => {
-        user.value = {
-          name: user.name,
-          username: user.login,
-          avatar: user.avatar_url,
-          company: user.company,
-          location: user.location,
-          twitter: user.twitter_username
+    const headers = new Headers()
+
+    headers.set('Authorization', `Basic ${btoa(import.meta.env.VITE_GITHUB_TOKEN)}`)
+
+    fetch(`https://api.github.com/users/${unref(username)}`, { headers })
+      .then(async response => {
+        const json = await response.json()
+
+        if (!response.ok) {
+          throw new Error(json.message)
         }
+
+        return json
+      })
+      .then(response => {
+        user.value = {
+          name: response.name,
+          username: response.login,
+          avatar: response.avatar_url,
+          company: response.company,
+          location: response.location,
+          twitter: response.twitter_username,
+          hireable: response.hireable,
+          repos: response.public_repos
+        }
+      })
+      .catch(e => {
+        error.value = e
       })
       .finally(() => {
         loading.value = false
@@ -42,6 +66,8 @@ export default function useGitHub(username) {
 
   return {
     loading,
-    user
+    user,
+    error,
+    isHireableAndProductive
   }
 }
