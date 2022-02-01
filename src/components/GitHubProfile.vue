@@ -79,8 +79,6 @@ export default {
         })
         .finally(() => {
           this.loading = false
-
-          this._usernameDebounce = undefined
         })
     }
   },
