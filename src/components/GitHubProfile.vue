@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import { ref } from 'vue'
 import Icon from 'vue-heroicon-next'
 
 export default {
@@ -39,6 +40,16 @@ export default {
     username: { 
       type: String,
       required: true
+    }
+  },
+
+  setup() {
+    const loading = ref(false)
+    const user = ref({})
+
+    return {
+      loading,
+      user
     }
   },
 
@@ -54,34 +65,44 @@ export default {
     }
   },
 
-  data() {
-    return {
-      loading: false,
-      user: {}
-    }
-  },
-
   methods: {
-    fetchUser() {      
+    fetchUser() {        
       this.loading = true
 
-      fetch(`https://api.github.com/users/${this.username}`)
-        .then(response => response.json())
-        .then(user => {
+      const fetchFake = new Promise(resolve => {
+        setTimeout(() => {
           this.user = {
-            name: user.name,
-            username: user.login,
-            avatar: user.avatar_url,
-            company: user.company,
-            location: user.location,
-            twitter: user.twitter_username
+            name: 'Dustin Wheeler',
+            username: 'mdwheele',
+            avatar: 'https://avatars.githubusercontent.com/u/2453394?v=4',
+            company: 'Nutanix',
+            location: 'Raleigh, NC',
+            twitter: 'mdwheele'
           }
-        })
-        .finally(() => {
-          this.loading = false
 
-          this._usernameDebounce = undefined
-        })
+          resolve()
+        }, 450)
+      })
+
+      fetchFake.then(() => this.loading = false)
+
+      // fetch(`https://api.github.com/users/${this.username}`)
+      //   .then(response => response.json())
+      //   .then(user => {
+      //     this.user = {
+      //       name: user.name,
+      //       username: user.login,
+      //       avatar: user.avatar_url,
+      //       company: user.company,
+      //       location: user.location,
+      //       twitter: user.twitter_username
+      //     }
+      //   })
+      //   .finally(() => {
+      //     this.loading = false
+
+      //     this._usernameDebounce = undefined
+      //   })
     }
   },
 
