@@ -47,9 +47,30 @@ export default {
     const loading = ref(false)
     const user = ref({})
 
+    function fetchUser() {        
+      loading.value = true
+
+      fetch(`https://api.github.com/users/${this.username}`)
+        .then(response => response.json())
+        .then(user => {
+          user.value = {
+            name: user.name,
+            username: user.login,
+            avatar: user.avatar_url,
+            company: user.company,
+            location: user.location,
+            twitter: user.twitter_username
+          }
+        })
+        .finally(() => {
+          loading.value = false
+        })
+    }
+
     return {
       loading,
-      user
+      user,
+      fetchUser
     }
   },
 
@@ -62,47 +83,6 @@ export default {
       this._debounce = setTimeout(() => {
         this.fetchUser()
       }, 600)
-    }
-  },
-
-  methods: {
-    fetchUser() {        
-      this.loading = true
-
-      const fetchFake = new Promise(resolve => {
-        setTimeout(() => {
-          this.user = {
-            name: 'Dustin Wheeler',
-            username: 'mdwheele',
-            avatar: 'https://avatars.githubusercontent.com/u/2453394?v=4',
-            company: 'Nutanix',
-            location: 'Raleigh, NC',
-            twitter: 'mdwheele'
-          }
-
-          resolve()
-        }, 450)
-      })
-
-      fetchFake.then(() => this.loading = false)
-
-      // fetch(`https://api.github.com/users/${this.username}`)
-      //   .then(response => response.json())
-      //   .then(user => {
-      //     this.user = {
-      //       name: user.name,
-      //       username: user.login,
-      //       avatar: user.avatar_url,
-      //       company: user.company,
-      //       location: user.location,
-      //       twitter: user.twitter_username
-      //     }
-      //   })
-      //   .finally(() => {
-      //     this.loading = false
-
-      //     this._usernameDebounce = undefined
-      //   })
     }
   },
 
