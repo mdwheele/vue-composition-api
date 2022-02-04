@@ -9,15 +9,15 @@
         <div class="font-semibold text-2xl text-gray-800">{{ user.name }}</div>
         <div class="text-gray-500">{{ user.username }}</div>
         <div class="mt-2 text-sm space-y-0.5">
-          <div class="flex items-center space-x-1.5">
+          <div v-if="user.company" class="flex items-center space-x-1.5">
             <Icon name="office-building" outline class="w-5 h-5 shrink-0 text-gray-600" />
             <span>{{ user.company }}</span>
           </div>
-          <div class="flex items-center space-x-1.5">
+          <div v-if="user.location" class="flex items-center space-x-1.5">
             <Icon name="location-marker" outline class="w-5 h-5 shrink-0 text-gray-600" />
             <span>{{ user.location }}</span>
           </div>
-          <div class="flex items-center space-x-1.5">
+          <div v-if="user.twitter" class="flex items-center space-x-1.5">
             <Icon name="cake" outline class="w-5 h-5 shrink-0 text-gray-600" />
             <span>{{ user.twitter }}</span>
           </div>
