@@ -38,7 +38,7 @@ export default {
 
   props: {
     username: { 
-      type: Number,
+      type: String,
       required: true
     }
   },
@@ -56,14 +56,14 @@ export default {
 
       fetch(`https://api.github.com/users/${props.username}`, { headers })
         .then(response => response.json())
-        .then(user => {
+        .then(response => {
           user.value = {
-            name: user.name,
-            username: user.login,
-            avatar: user.avatar_url,
-            company: user.company,
-            location: user.location,
-            twitter: user.twitter_username
+            name: response.name,
+            username: response.login,
+            avatar: response.avatar_url,
+            company: response.company,
+            location: response.location,
+            twitter: response.twitter_username
           }
         })
         .finally(() => {
