@@ -14,7 +14,7 @@
     </div>
 
     <div class="w-96">
-      <input type="text" v-model="input" class="w-full rounded-2xl p-6 text-2xl shadow-xl focus:outline-none" placeholder="Type something..." />
+      <input type="text" v-model="input" class="w-full text-center rounded-2xl p-6 text-2xl shadow-xl focus:outline-none" placeholder="Type something..." />
     </div>
   </div>
 </template>
