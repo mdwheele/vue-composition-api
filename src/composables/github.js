@@ -6,7 +6,6 @@ export default function useGitHub(username) {
   const user = ref({})
 
   const isHireableAndProductive = computed(() => {
-    console.log('foo')
     return user.value.hireable === true && user.value.repos >= 10
   })
   
