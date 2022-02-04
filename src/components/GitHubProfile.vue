@@ -4,7 +4,12 @@
       <Icon name="refresh" outline class="boxw-16 h-16 shrink-0 animate-spin text-gray-500" />
     </div>
     <div v-else class="flex items-start space-x-6">
-      <img :src="user.avatar" class="w-32 h-32 rounded-full"/>
+      <div class="relative">
+        <img :src="user.avatar" class="w-32 h-32 rounded-full"/>
+        <div v-if="isHireableAndProductive" class="absolute right-0 bottom-0 bg-green-600 rounded-full p-1.5 ring-4 ring-white">
+          <Icon name="check" class="w-5 h-5 text-white" />
+        </div>
+      </div>
       <div>
         <div class="font-semibold text-2xl text-gray-800">{{ user.name }}</div>
         <div class="text-gray-500">{{ user.username }}</div>
@@ -28,7 +33,7 @@
 </template>
 
 <script>
-import { ref, onMounted, watch, toRefs, watchEffect } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import Icon from 'vue-heroicon-next'
 
 export default {
@@ -48,6 +53,10 @@ export default {
     const loading = ref(false)
     const user = ref({})
 
+    const isHireableAndProductive = computed(() => {
+      return user.value.hireable === true && user.value.repos >= 10
+    })
+
     function fetchUser() {        
       loading.value = true
 
@@ -63,7 +72,9 @@ export default {
             avatar: response.avatar_url,
             company: response.company,
             location: response.location,
-            twitter: response.twitter_username
+            twitter: response.twitter_username,
+            hireable: response.hireable,
+            repos: response.public_repos
           }
         })
         .finally(() => {
@@ -88,7 +99,8 @@ export default {
     return {
       loading,
       user,
-      fetchUser
+      fetchUser,
+      isHireableAndProductive
     }
   }
 }
