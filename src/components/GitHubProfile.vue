@@ -51,7 +51,10 @@ export default {
     function fetchUser() {        
       loading.value = true
 
-      fetch(`https://api.github.com/users/${props.username}`)
+      const headers = new Headers()
+      headers.set('Authorization', `Basic ${btoa(import.meta.env.VITE_GITHUB_TOKEN)}`)
+
+      fetch(`https://api.github.com/users/${props.username}`, { headers })
         .then(response => response.json())
         .then(user => {
           user.value = {
