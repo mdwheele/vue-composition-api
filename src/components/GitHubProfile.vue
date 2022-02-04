@@ -86,7 +86,7 @@ export default {
     }
   },
 
-  created() {
+  mounted() {
     this.fetchUser()
   }
 }
